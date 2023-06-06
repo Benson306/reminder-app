@@ -5,7 +5,7 @@ import { Feather } from '@expo/vector-icons';
 import Card from "./Card";
 import { AntDesign } from '@expo/vector-icons';
 
-const Home = () => {
+const Home = ({ navigation }) => {
     const insets = useSafeAreaInsets();
 
     return ( <View style={{ flex: 1, paddingTop: insets.top, paddingBottom: insets.bottom, paddingLeft: insets.left, paddingRight: insets.right, backgroundColor: '#000' }}>
@@ -66,6 +66,8 @@ const Home = () => {
             zIndex:1
 
             }}
+
+            onPress={()=>{ navigation.navigate('Add')  }}
         >
             <AntDesign name="plus" size={24} color="#fff" />
         </TouchableOpacity>
