@@ -2,16 +2,17 @@ import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { MaterialIcons } from '@expo/vector-icons';
 import { Feather } from '@expo/vector-icons';
+import Card from "./Card";
 
 const Home = () => {
     const insets = useSafeAreaInsets();
 
     return ( <View style={{ flex: 1, paddingTop: insets.top, paddingBottom: insets.bottom, paddingLeft: insets.left, paddingRight: insets.right, backgroundColor: '#000' }}>
 
-        <MaterialIcons name="date-range" size={24} color="#ccccff" style={{marginTop: 30, paddingRight:40, alignSelf:'flex-end'}} />
+        <MaterialIcons name="date-range" size={24} color="#ccccff" style={{marginTop: 20, paddingRight:40, alignSelf:'flex-end'}} />
         
         
-        <Text style={{color:'gray', alignSelf:'center', marginTop:30}}>Hello, <Text style={{color:'#ff944d', fontSize:16}} >Ben Ndiwa!</Text></Text>
+        <Text style={{color:'gray', alignSelf:'center', marginTop:20}}>Hello, <Text style={{color:'#ff944d', fontSize:16}} >Ben Ndiwa!</Text></Text>
 
         <View 
         style={{alignSelf:'center', backgroundColor:'#00004d', marginTop: 20, padding: 10, paddingLeft: 25, paddingRight: 25, borderRadius:25, flexDirection:'row'}}
@@ -20,7 +21,7 @@ const Home = () => {
             <Text style={{color:'#ccccff', textAlign:'center', fontSize: 14}}>You Have 8 Activities Today</Text>
         </View>
 
-        <View style={{flexDirection:'row', marginTop:30, justifyContent:'space-evenly'}}>
+        <View style={{flexDirection:'row', marginTop:20, justifyContent:'space-evenly'}}>
 
             <View style={{padding: 15, borderRadius:10, backgroundColor:'#333333',width: 160}}>
                 <MaterialIcons name="pending-actions" size={40} color="#ff944d" style={{alignSelf:'center'}} />
@@ -43,6 +44,13 @@ const Home = () => {
             <Text style={{color:'#fff', fontSize: 18, fontWeight:'bold'}}>Today's Activities</Text>
             <Text style={{color:'#ff944d', fontSize: 12, fontWeight:'bold'}}>See all</Text>
         </View>
+
+        <ScrollView style={{marginBottom:10}}>
+            <Card title="Finance App Design" description="Solve the Finance app bug and build to get it ready for deployment." starttime="10.00 pm" endtime="10.30pm" />
+            <Card title="Finance App Design" description="Solve the Finance app bug and build to get it ready for deployment." starttime="10.00 pm" endtime="10.30pm" />
+        </ScrollView>
+
+        
 
     </View> );
 }
