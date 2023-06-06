@@ -1,15 +1,18 @@
-import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { MaterialIcons } from '@expo/vector-icons';
 import { Feather } from '@expo/vector-icons';
 import Card from "./Card";
+import { AntDesign } from '@expo/vector-icons';
 
 const Home = () => {
     const insets = useSafeAreaInsets();
 
     return ( <View style={{ flex: 1, paddingTop: insets.top, paddingBottom: insets.bottom, paddingLeft: insets.left, paddingRight: insets.right, backgroundColor: '#000' }}>
 
-        <MaterialIcons name="date-range" size={24} color="#ccccff" style={{marginTop: 20, paddingRight:40, alignSelf:'flex-end'}} />
+        <TouchableOpacity>
+            <MaterialIcons name="date-range" size={24} color="#ccccff" style={{marginTop: 10, paddingRight:25, alignSelf:'flex-end'}} />
+        </TouchableOpacity>
         
         
         <Text style={{color:'gray', alignSelf:'center', marginTop:20}}>Hello, <Text style={{color:'#ff944d', fontSize:16}} >Ben Ndiwa!</Text></Text>
@@ -42,10 +45,38 @@ const Home = () => {
 
         <View style={{margin:20, flexDirection:'row', justifyContent:'space-between'}}>
             <Text style={{color:'#fff', fontSize: 18, fontWeight:'bold'}}>Today's Activities</Text>
-            <Text style={{color:'#ff944d', fontSize: 12, fontWeight:'bold'}}>See all</Text>
+            <TouchableOpacity>
+                <Text style={{color:'#ff944d', fontSize: 12, fontWeight:'bold'}}>See all</Text>
+            </TouchableOpacity>
         </View>
 
-        <ScrollView style={{marginBottom:10}}>
+        <TouchableOpacity
+            style={{
+            borderWidth: 1,
+            borderColor: 'rgba(0,0,0,0.2)',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: 60,
+            position: 'absolute',
+            bottom: 20,
+            right: 20,
+            height: 60,
+            backgroundColor: '#ff944d',
+            borderRadius: 100,
+            zIndex:1
+
+            }}
+        >
+            <AntDesign name="plus" size={24} color="#fff" />
+        </TouchableOpacity>
+
+        <ScrollView style={{marginBottom:30}}>
+            <Card title="Finance App Design" description="Solve the Finance app bug and build to get it ready for deployment." starttime="10.00 pm" endtime="10.30pm" />
+            <Card title="Finance App Design" description="Solve the Finance app bug and build to get it ready for deployment." starttime="10.00 pm" endtime="10.30pm" />
+            <Card title="Finance App Design" description="Solve the Finance app bug and build to get it ready for deployment." starttime="10.00 pm" endtime="10.30pm" />
+            <Card title="Finance App Design" description="Solve the Finance app bug and build to get it ready for deployment." starttime="10.00 pm" endtime="10.30pm" />
+            <Card title="Finance App Design" description="Solve the Finance app bug and build to get it ready for deployment." starttime="10.00 pm" endtime="10.30pm" />
+            <Card title="Finance App Design" description="Solve the Finance app bug and build to get it ready for deployment." starttime="10.00 pm" endtime="10.30pm" />
             <Card title="Finance App Design" description="Solve the Finance app bug and build to get it ready for deployment." starttime="10.00 pm" endtime="10.30pm" />
             <Card title="Finance App Design" description="Solve the Finance app bug and build to get it ready for deployment." starttime="10.00 pm" endtime="10.30pm" />
         </ScrollView>

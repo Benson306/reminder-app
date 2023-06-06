@@ -1,4 +1,4 @@
-import { Image, Text, View } from "react-native";
+import { Image, Text, TouchableOpacity, View } from "react-native";
 
 const Card = (props) => {
     return ( <View style={{
@@ -11,7 +11,11 @@ const Card = (props) => {
     }}>
         <View style={{flexDirection:'row', justifyContent:'space-between'}}>
             <Text style={{color:'white', fontWeight: '900', fontSize:18}}>{props.title}</Text>
-            <Text style={{backgroundColor: '#ccccff', padding:3, borderRadius:10, fontSize:12, width:40, textAlign:'center'}}>Edit</Text>
+            
+
+            <TouchableOpacity>
+                <Text style={{backgroundColor: '#ccccff', padding:3, borderRadius:10, fontSize:12, width:40, textAlign:'center'}}>Edit</Text>
+            </TouchableOpacity>
         </View>
         <Text style={{color: 'gray', marginTop:15}}>{props.description}</Text>
         <View style={{flexDirection:'row', marginTop: 10}}>
