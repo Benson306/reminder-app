@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Platform, Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import RNDateTimePicker from "@react-native-community/datetimepicker";
@@ -23,6 +23,9 @@ const AddActivity = () => {
 
     
     const [date, setDate] = useState(new Date());
+
+    const [startTime, setStartTime] = useState(new Date());
+
     const [showDate, setShowDate] = useState(false);
 
     const toggleDataPicker = () =>{
@@ -44,9 +47,9 @@ const AddActivity = () => {
         }
     }
 
-    return ( <View style={{ flex: 1, paddingTop: insets.top, paddingBottom: insets.bottom, paddingLeft: insets.left, paddingRight: insets.right, backgroundColor: '#000' }}>
+    return ( <ScrollView style={{ flex: 1, paddingTop: insets.top, paddingBottom: insets.bottom, paddingLeft: insets.left, paddingRight: insets.right, backgroundColor: '#000' }}>
         <View style={{marginLeft:20, marginRight: 20}}>
-            <Text style={{color:'#fff', fontSize: 18, fontWeight:'900', marginLeft:10 }}>Title</Text>
+            <Text style={{color:'#fff', fontSize: 18, fontWeight:'900', marginLeft:10, fontSize:14 }}>Title</Text>
             <View style={{backgroundColor:'#333333', padding:10, borderRadius:25, margin: 5}}>
                 <TextInput style={{
                     borderRadius:25,
@@ -57,20 +60,21 @@ const AddActivity = () => {
             </View>
             
 
-            <Text style={{color:'#fff', fontSize: 18, fontWeight:'900', marginLeft:10, marginTop:10}}>Description</Text>
+            <Text style={{color:'#fff', fontSize: 18, fontWeight:'900', marginLeft:10, marginTop:10, fontSize:14}}>Description</Text>
             <View style={{backgroundColor:'#333333', padding:10, borderRadius:25, margin: 5}}>
-                <TextInput style={{
+                <TextInput 
+                multiline={true}
+                numberOfLines={3}
+                style={{
                     borderRadius:25,
                     marginLeft: 15,
                     color:'#ccccff'
+                    
                 }}
                 />
             </View>
 
-            <Text style={{color:'#fff', fontSize: 18, fontWeight:'900', marginLeft:10, marginTop:10}}>Date</Text>
-           
-            
-            
+            <Text style={{color:'#fff', fontSize: 18, fontWeight:'900', marginLeft:10, marginTop:10, fontSize:14}}>Date</Text>
             {
                 showDate &&
                 <DateTimePicker 
@@ -92,7 +96,7 @@ const AddActivity = () => {
                     placeholder="Wed Jun 7 2023"
                     value={activityDate}
                     onChangeText={setActivityDate}
-                    placeholderTextColor="#fff"
+                    placeholderTextColor="#ccccff"
                     editable={false}
                     style={{
                         borderRadius:25,
@@ -107,18 +111,47 @@ const AddActivity = () => {
 
 
             <View style={{flexDirection:'row', justifyContent:'space-between'}}>
-                <View>
-                    <Text style={{color:'#fff', fontSize: 18, fontWeight:'900', marginLeft:10, marginTop:10}}>Start Time</Text>
-                    
+                <View style={{width: "45%"}} >
+                    <Text style={{color:'#fff', fontSize: 18, fontWeight:'900', marginLeft:10, marginTop:10, fontSize:14}}>Start Time</Text>
+                    <DateTimePicker value={startTime} mode="time" />
+                    <Pressable>
+                    <View style={{backgroundColor:'#333333', padding:10, borderRadius:25, margin: 5}}>
+                        <TextInput 
+                        placeholder="11.00 AM"
+                        placeholderTextColor='#ccccff'
+                        style={{
+                            borderRadius:25,
+                            marginLeft: 5,
+                            color:'#ccccff',
+                        }}
+                        editable={false}
+                        />
+                    </View>
+                    </Pressable>
                 </View>
 
-                <View>
-                    <Text style={{color:'#fff', fontSize: 18, fontWeight:'900', marginTop:10}}>End Time</Text>
-                    
+                <View style={{width: "45%"}}>
+                    <Text style={{color:'#fff', fontSize: 18, fontWeight:'900', marginLeft:10, marginTop:10, fontSize:14}}>End Time</Text>
+                    <DateTimePicker value={startTime} mode="time" />
+                    <Pressable>
+                    <View style={{backgroundColor:'#333333', padding:10, borderRadius:25, margin: 5}}>
+                        <TextInput 
+                        placeholder="11.00 AM"
+                        placeholderTextColor='#ccccff'
+                        placeholderTextAlign="center"
+                        style={{
+                            borderRadius:25,
+                            marginLeft: 5,
+                            color:'#ccccff'
+                        }}
+                        editable={false}
+                        />
+                    </View>
+                    </Pressable>
                 </View>
             </View>
 
-            <Text style={{color:'#fff', fontSize: 18, fontWeight:'900', marginLeft:10, marginTop:10}}>Repeat Every:</Text>
+            <Text style={{color:'#fff', fontSize: 18, fontWeight:'900', marginLeft:10, marginTop:10, fontSize: 14}}>Repeat Every:</Text>
 
             <View style={{flexDirection:'row', justifyContent:'space-evenly', marginTop:10, marginBelow:20}}>
                 <View>
@@ -192,17 +225,18 @@ const AddActivity = () => {
                 </View>
             </View>
             
-            <Text style={{color:'#fff', fontSize: 18, fontWeight:'900', marginLeft:10, marginTop:20}}>Notify Before</Text>
+            <Text style={{color:'#fff', fontSize: 18, fontWeight:'900', marginLeft:10, marginTop:10, fontSize:14}}>Notify Before</Text>
 
-            <View style={{ backgroundColor:'#333333', marginTop:10,borderRadius:25}}>
+            <View style={{ backgroundColor:'#333333', marginTop:10,borderRadius:35}}>
                 <Picker
                 selectedValue={selectedNotifyTime}
                 onValueChange={(itemValue, itemIndex) =>
                     setSelectedNotifyTime(itemValue)
                 }
                 dropdownIconColor={"#fff"}
+                activeItemTextStyle={{fontSize: 3}}
                 style={{
-                    color:'#fff'
+                    color:'#ccccff'
                 }}
                 
                 >
@@ -222,30 +256,26 @@ const AddActivity = () => {
             </View>
 
             <TouchableOpacity  style={{
-            borderWidth: 1,
             alignItems: 'center',
             alignSelf:'center',
             justifyContent: 'center',
             width: 200,
-            marginTop: 60,
-            height: 50,
+            height: 40,
             backgroundColor: '#ff944d',
-            borderRadius: 50,
-
+            borderRadius: 10,
+            marginTop:10,
+            marginBottom:50,
+            bottom:0
+           
             }}>
                 <Text style={{color:'#fff'}}>Submit</Text>
             </TouchableOpacity>
 
         </View>
-    </View> );
+    </ScrollView> );
 }
 
 const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      marginHorizontal: 16,
-      marginVertical: 32,
-    },
     section: {
       flexDirection: 'row',
       alignItems: 'center',
