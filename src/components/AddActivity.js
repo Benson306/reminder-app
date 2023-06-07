@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Platform, Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import RNDateTimePicker from "@react-native-community/datetimepicker";
@@ -18,10 +18,31 @@ const AddActivity = () => {
     const [everySat, setEverySat] = useState(false);
     const [everySun, setEverySun] = useState(false);
 
-    const [date, setDate] = useState(new Date());
-    const [isChecked, setChecked] = useState(false);
-
     const [selectedNotifyTime, setSelectedNotifyTime] = useState();
+    const [activityDate, setActivityDate] = useState("");
+
+    
+    const [date, setDate] = useState(new Date());
+    const [showDate, setShowDate] = useState(false);
+
+    const toggleDataPicker = () =>{
+        setShowDate(!showDate);
+    }
+
+    const onDateChange = ({ type }, selectedDate) =>{
+        if(type == "set"){
+            const currentDate = selectedDate;
+            setDate(currentDate)
+
+            if(Platform.OS === "android"){
+                toggleDataPicker();
+                setActivityDate(currentDate.toDateString());
+            }
+
+        }else{
+            toggleDataPicker();
+        }
+    }
 
     return ( <View style={{ flex: 1, paddingTop: insets.top, paddingBottom: insets.bottom, paddingLeft: insets.left, paddingRight: insets.right, backgroundColor: '#000' }}>
         <View style={{marginLeft:20, marginRight: 20}}>
@@ -30,47 +51,69 @@ const AddActivity = () => {
                 <TextInput style={{
                     borderRadius:25,
                     marginLeft: 15,
-                    color:'#fff'
+                    color:'#ccccff'
                 }}
                 />
             </View>
             
 
-            <Text style={{color:'#fff', fontSize: 18, fontWeight:'900', marginLeft:10}}>Description</Text>
+            <Text style={{color:'#fff', fontSize: 18, fontWeight:'900', marginLeft:10, marginTop:10}}>Description</Text>
             <View style={{backgroundColor:'#333333', padding:10, borderRadius:25, margin: 5}}>
                 <TextInput style={{
                     borderRadius:25,
                     marginLeft: 15,
-                    color:'#fff'
+                    color:'#ccccff'
                 }}
                 />
             </View>
 
-            <Text style={{color:'#fff', fontSize: 18, fontWeight:'900', marginLeft:10}}>Date</Text>
-            {/* <TextInput style={{
-                backgroundColor: '#333333',
-                padding:10,
-                borderRadius:20,
-                margin:5
-            }}
-            /> */}
-            {/* <RNDateTimePicker mode="date" value={new Date()} display={"default"} /> */}
-            <View>
-                <DateTimePicker
-                value={date}
-                onDateChange={setDate}
+            <Text style={{color:'#fff', fontSize: 18, fontWeight:'900', marginLeft:10, marginTop:10}}>Date</Text>
+           
+            
+            
+            {
+                showDate &&
+                <DateTimePicker 
+                    mode="date" 
+                    display="spinner" 
+                    value={date}
+                    onChange={onDateChange} 
+                    minimumDate={new Date()}
                 />
-            </View>
+                
+            }
+
+            { !showDate && 
+            <Pressable
+                onPress={ toggleDataPicker }
+            >
+                <View style={{backgroundColor:'#333333', padding:10, borderRadius:25, margin: 5}}>
+                <TextInput 
+                    placeholder="Wed Jun 7 2023"
+                    value={activityDate}
+                    onChangeText={setActivityDate}
+                    placeholderTextColor="#fff"
+                    editable={false}
+                    style={{
+                        borderRadius:25,
+                        marginLeft: 15,
+                        color:'#ccccff'
+                    }}
+                    onPressIn={toggleDataPicker}
+                    />
+                </View>
+            </Pressable>
+            }
 
 
             <View style={{flexDirection:'row', justifyContent:'space-between'}}>
                 <View>
-                    <Text style={{color:'#fff', fontSize: 18, fontWeight:'900', marginLeft:10}}>Start Time</Text>
+                    <Text style={{color:'#fff', fontSize: 18, fontWeight:'900', marginLeft:10, marginTop:10}}>Start Time</Text>
                     
                 </View>
 
                 <View>
-                    <Text style={{color:'#fff', fontSize: 18, fontWeight:'900'}}>End Time</Text>
+                    <Text style={{color:'#fff', fontSize: 18, fontWeight:'900', marginTop:10}}>End Time</Text>
                     
                 </View>
             </View>
@@ -190,7 +233,7 @@ const AddActivity = () => {
             borderRadius: 50,
 
             }}>
-                <Text style={{color:'#fff'}}>Add Activity</Text>
+                <Text style={{color:'#fff'}}>Submit</Text>
             </TouchableOpacity>
 
         </View>
