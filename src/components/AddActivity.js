@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import DateTimePicker from '@react-native-community/datetimepicker';
-import RNDateTimePicker from "@react-native-community/datetimepicker";
 import Checkbox from 'expo-checkbox';
 import {Picker} from '@react-native-picker/picker';
 
@@ -19,14 +18,12 @@ const AddActivity = () => {
     const [everySun, setEverySun] = useState(false);
 
     const [selectedNotifyTime, setSelectedNotifyTime] = useState();
-    const [activityDate, setActivityDate] = useState("");
-
     
+
+    // Handle date picker
     const [date, setDate] = useState(new Date());
-
-    const [startTime, setStartTime] = useState(new Date());
-
     const [showDate, setShowDate] = useState(false);
+    const [activityDate, setActivityDate] = useState("");
 
     const toggleDataPicker = () =>{
         setShowDate(!showDate);
@@ -45,6 +42,49 @@ const AddActivity = () => {
         }else{
             toggleDataPicker();
         }
+    }
+
+    const [currentTime, setCurrentTime] = useState(new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: true }).toString());
+    
+
+    //Handle Start time Picker
+    const [startTime, setStartTime] =useState('');
+
+    const [showStartTimeSelector, setShowStartTimeSelector] = useState(false);
+
+    const handleStartTimeDisplay = () =>{
+        setShowStartTimeSelector(!showStartTimeSelector);
+    }
+
+    const onStartTimeChange = ({ type }, selectedTime) =>{
+        setDate(selectedTime);
+        
+        let selectedStartTime = selectedTime.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: true }).toString();
+
+        setStartTime(selectedStartTime);
+        
+        handleStartTimeDisplay();
+    }
+
+
+    //Handle End time Picker
+    const [endTime, setEndTime] =useState('');
+
+    const [showEndTimeSelector, setShowEndTimeSelector] = useState(false);
+
+    const handleEndTimeDisplay = () =>{
+        setShowEndTimeSelector(!showEndTimeSelector);
+    }
+
+    const onEndTimeChange = ({ type }, selectedTime) =>{
+
+        setDate(selectedTime);
+        
+        let selectedEndTime = selectedTime.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: true }).toString();
+
+        setEndTime(selectedEndTime);
+        
+        handleEndTimeDisplay();
     }
 
     return ( <ScrollView style={{ flex: 1, paddingTop: insets.top, paddingBottom: insets.bottom, paddingLeft: insets.left, paddingRight: insets.right, backgroundColor: '#000' }}>
@@ -113,41 +153,70 @@ const AddActivity = () => {
             <View style={{flexDirection:'row', justifyContent:'space-between'}}>
                 <View style={{width: "45%"}} >
                     <Text style={{color:'#fff', fontSize: 18, fontWeight:'900', marginLeft:10, marginTop:10, fontSize:14}}>Start Time</Text>
-                    <DateTimePicker value={startTime} mode="time" />
-                    <Pressable>
-                    <View style={{backgroundColor:'#333333', padding:10, borderRadius:25, margin: 5}}>
-                        <TextInput 
-                        placeholder="11.00 AM"
-                        placeholderTextColor='#ccccff'
+                    <Pressable onPress={handleStartTimeDisplay}>
+                    <View style={{backgroundColor:'#333333', padding:10, borderRadius:25, margin: 5, height:40}}>  
+                    { startTime.length === 0 ?
+                        <Text
                         style={{
                             borderRadius:25,
                             marginLeft: 5,
                             color:'#ccccff',
                         }}
-                        editable={false}
-                        />
-                    </View>
-                    </Pressable>
-                </View>
-
-                <View style={{width: "45%"}}>
-                    <Text style={{color:'#fff', fontSize: 18, fontWeight:'900', marginLeft:10, marginTop:10, fontSize:14}}>End Time</Text>
-                    <DateTimePicker value={startTime} mode="time" />
-                    <Pressable>
-                    <View style={{backgroundColor:'#333333', padding:10, borderRadius:25, margin: 5}}>
-                        <TextInput 
-                        placeholder="11.00 AM"
-                        placeholderTextColor='#ccccff'
-                        placeholderTextAlign="center"
+                        >
+                        { currentTime }
+                        </Text> 
+                        :
+                        <Text
                         style={{
                             borderRadius:25,
                             marginLeft: 5,
-                            color:'#ccccff'
+                            color:'#ccccff',
                         }}
-                        editable={false}
-                        />
+                        >
+                        { startTime }
+                        </Text>
+                    }
                     </View>
                     </Pressable>
+
+                    {
+                        showStartTimeSelector && <DateTimePicker value={date} mode="time" onChange={onStartTimeChange} />
+                    }
+
+                </View>
+
+                <View style={{width: "45%"}} >
+                    <Text style={{color:'#fff', fontSize: 18, fontWeight:'900', marginLeft:10, marginTop:10, fontSize:14}}>End Time</Text>
+                    <Pressable onPress={handleEndTimeDisplay}>
+                    <View style={{backgroundColor:'#333333', padding:10, borderRadius:25, margin: 5, height:40}}>  
+                    { endTime.length === 0 ?
+                        <Text
+                        style={{
+                            borderRadius:25,
+                            marginLeft: 5,
+                            color:'#ccccff',
+                        }}
+                        >
+                        { currentTime }
+                        </Text> 
+                        :
+                        <Text
+                        style={{
+                            borderRadius:25,
+                            marginLeft: 5,
+                            color:'#ccccff',
+                        }}
+                        >
+                        { endTime }
+                        </Text>
+                    }
+                    </View>
+                    </Pressable>
+
+                    {
+                        showEndTimeSelector && <DateTimePicker value={date} mode="time" onChange={onEndTimeChange} />
+                    }
+
                 </View>
             </View>
 
