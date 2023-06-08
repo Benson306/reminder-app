@@ -91,11 +91,13 @@ const AddActivity = () => {
         <View style={{marginLeft:20, marginRight: 20}}>
             <Text style={{color:'#fff', fontSize: 18, fontWeight:'900', marginLeft:10, fontSize:14 }}>Title</Text>
             <View style={{backgroundColor:'#333333', padding:10, borderRadius:25, margin: 5}}>
-                <TextInput style={{
+                <TextInput 
+                style={{
                     borderRadius:25,
                     marginLeft: 15,
                     color:'#ccccff'
                 }}
+                selectionColor="#ff944d"
                 />
             </View>
             
@@ -105,6 +107,7 @@ const AddActivity = () => {
                 <TextInput 
                 multiline={true}
                 numberOfLines={3}
+                selectionColor="#ff944d"
                 style={{
                     borderRadius:25,
                     marginLeft: 15,
