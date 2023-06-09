@@ -24,6 +24,8 @@ export const initialState = {
 const Reducer = (action , state) =>{
     const { type, payload } = action;
     switch(type){
+        case "SET_STATE":
+            return payload;
         case "ADD_ACTIVITY":
             let addState ={
                 ...state,
