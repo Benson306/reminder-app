@@ -1,13 +1,20 @@
 import { useState } from "react";
-import { Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Alert, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Checkbox from 'expo-checkbox';
 import {Picker} from '@react-native-picker/picker';
+import useActivity from "../utils/ActivityContext";
 
 const AddActivity = () => {
 
     const insets = useSafeAreaInsets();
+
+
+    const [title, setTitle] = useState(null);
+    const [description, setDescription] = useState(null);
+
+    const [selectedNotifyTime, setSelectedNotifyTime] = useState(5);
 
     const [everyMonday, setEveryMonday] = useState(false);
     const [everyTuesday, setEveryTuesday] = useState(false);
@@ -16,9 +23,6 @@ const AddActivity = () => {
     const [everyFri, setEveryFri] = useState(false);
     const [everySat, setEverySat] = useState(false);
     const [everySun, setEverySun] = useState(false);
-
-    const [selectedNotifyTime, setSelectedNotifyTime] = useState();
-    
 
     // Handle date picker
     const [date, setDate] = useState(new Date());
@@ -87,6 +91,65 @@ const AddActivity = () => {
         handleEndTimeDisplay();
     }
 
+    // Add Activity Function
+
+    const { addActivity } = useActivity();
+
+    const handleSubmit = () => {
+        // check if title and decsription is null
+        if(title == null || description == null){
+            Alert.alert('Failed','Title or Description is Empty', [
+                { text: 'Retry', onPress: ()=>{}}
+            ])
+            return;
+        }
+
+        //Check if date is set
+        if(activityDate.length == 0){
+            Alert.alert('Failed','Date Has Not Been Set', [
+                { text: 'Retry', onPress: ()=>{}}
+            ])
+            return;
+        }
+
+        // Check if start time is set
+        if(startTime.length == 0){
+            Alert.alert('Failed','Start Time is Not Set', [
+                { text: 'Reset', onPress: ()=>{}}
+            ])
+            return;
+        }
+
+        // Check if end time is set
+        if(endTime.length == 0){
+            Alert.alert('Failed','End Time is Not Set', [
+                { text: 'Reset', onPress: ()=>{}}
+            ])
+            return;
+        }
+
+        let activity =
+        {
+            title,
+            description,
+            date,
+            startTime,
+            endTime,
+            repeatEvery:{
+                sun: everySun,
+                mon: everyMonday,
+                tue: everyTuesday,
+                wed: everyWed,
+                thur: everyThur,
+                fri: everyFri,
+                sat: everySat
+            },
+            notifyBefore: selectedNotifyTime
+        }
+
+        addActivity(activity);
+    }
+
     return ( <ScrollView style={{ flex: 1, paddingTop: insets.top, paddingBottom: insets.bottom, paddingLeft: insets.left, paddingRight: insets.right, backgroundColor: '#000' }}>
         <View style={{marginLeft:20, marginRight: 20}}>
             <Text style={{color:'#fff', fontSize: 18, fontWeight:'900', marginLeft:10, fontSize:14 }}>Title</Text>
@@ -98,6 +161,7 @@ const AddActivity = () => {
                     color:'#ccccff'
                 }}
                 selectionColor="#ff944d"
+                onChangeText={setTitle}
                 />
             </View>
             
@@ -108,6 +172,7 @@ const AddActivity = () => {
                 multiline={true}
                 numberOfLines={3}
                 selectionColor="#ff944d"
+                onChangeText={setDescription}
                 style={{
                     borderRadius:25,
                     marginLeft: 15,
@@ -136,7 +201,7 @@ const AddActivity = () => {
             >
                 <View style={{backgroundColor:'#333333', padding:10, borderRadius:25, margin: 5}}>
                 <TextInput 
-                    placeholder="Wed Jun 7 2023"
+                    placeholder="Day Month X XXXX"
                     value={activityDate}
                     onChangeText={setActivityDate}
                     placeholderTextColor="#ccccff"
@@ -166,7 +231,7 @@ const AddActivity = () => {
                             color:'#ccccff',
                         }}
                         >
-                        { currentTime }
+                        00: 00 
                         </Text> 
                         :
                         <Text
@@ -200,7 +265,7 @@ const AddActivity = () => {
                             color:'#ccccff',
                         }}
                         >
-                        { currentTime }
+                        00:00
                         </Text> 
                         :
                         <Text
@@ -217,7 +282,7 @@ const AddActivity = () => {
                     </Pressable>
 
                     {
-                        showEndTimeSelector && <DateTimePicker value={date} mode="time" onChange={onEndTimeChange} />
+                        showEndTimeSelector && <DateTimePicker value={date} mode="time" onChange={onEndTimeChange} minimumDate={date} />
                     }
 
                 </View>
@@ -312,18 +377,18 @@ const AddActivity = () => {
                 }}
                 
                 >
-                    <Picker.Item label="5 mins" value="5" />
-                    <Picker.Item label="10 mins" value="10" />
-                    <Picker.Item label="15 mins" value="15" />
-                    <Picker.Item label="20 mins" value="20" />
-                    <Picker.Item label="25 mins" value="25" />
-                    <Picker.Item label="30 mins" value="30" />
-                    <Picker.Item label="35 mins" value="35" />
-                    <Picker.Item label="40 mins" value="40" />
-                    <Picker.Item label="45 mins" value="45" />
-                    <Picker.Item label="50 mins" value="50" />
-                    <Picker.Item label="55 mins" value="55" />
-                    <Picker.Item label="60 mins" value="60" />
+                    <Picker.Item label="5 mins" value={5} />
+                    <Picker.Item label="10 mins" value={10} />
+                    <Picker.Item label="15 mins" value={15} />
+                    <Picker.Item label="20 mins" value={20} />
+                    <Picker.Item label="25 mins" value={25} />
+                    <Picker.Item label="30 mins" value={30} />
+                    <Picker.Item label="35 mins" value={35} />
+                    <Picker.Item label="40 mins" value={40} />
+                    <Picker.Item label="45 mins" value={45} />
+                    <Picker.Item label="50 mins" value={50} />
+                    <Picker.Item label="55 mins" value={55} />
+                    <Picker.Item label="60 mins" value={60} />
                 </Picker>
             </View>
 
@@ -339,7 +404,9 @@ const AddActivity = () => {
             marginBottom:50,
             bottom:0
            
-            }}>
+            }}
+            onPress={()=> handleSubmit()}
+            >
                 <Text style={{color:'#fff'}}>Submit</Text>
             </TouchableOpacity>
 

@@ -26,7 +26,7 @@ export const ActivityProvider = ({ children }) =>{
         dispatch({
             type:"ADD_ACTIVITY",
             payload:{
-                activity: updatedActivities
+                activities: updatedActivities
             }
         })
 

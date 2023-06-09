@@ -1,28 +1,13 @@
-export const initialState = {
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+export let initialState = {
     user: '',
     activities: []
 }
 
-// {
-//     title: null,
-//     description: null,
-//     date: '',
-//     startTime:'',
-//     endTime: '',
-//     repeatEvery:{
-//         sun:false,
-//         mon: false,
-//         tue: false,
-//         wed: false,
-//         thur: false,
-//         fri: false,
-//         sat: false
-//     },
-//     notifyBefore:''
-// }
-
-const Reducer = (action , state) =>{
+const Reducer = (state , action) =>{
     const { type, payload } = action;
+
     switch(type){
         case "SET_STATE":
             return payload;
@@ -31,12 +16,14 @@ const Reducer = (action , state) =>{
                 ...state,
                 activities: payload.activites
             }
+            AsyncStorage.setItem('state', JSON.stringify(addState))
             return addState;
         case "DELETE_ACTIVITY":
             let newState = {
                 ...state,
                 activities: payload.activities
             }
+            AsyncStorage.setItem('state', JSON.stringify(newState));
             return newState;
         default:
             throw new Error("No case found in reducer");
