@@ -1,11 +1,12 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export let initialState = {
-    user: '',
-    activities: []
-}
+    user: null,
+    activities: [],
+  };
+  
 
-const Reducer = (state , action) =>{
+const reducer = (state, action) =>{
     const { type, payload } = action;
 
     switch(type){
@@ -14,7 +15,7 @@ const Reducer = (state , action) =>{
         case "ADD_ACTIVITY":
             let addState ={
                 ...state,
-                activities: payload.activites
+                activities: payload.activities
             }
             AsyncStorage.setItem('state', JSON.stringify(addState))
             return addState;
@@ -31,4 +32,4 @@ const Reducer = (state , action) =>{
     }
 }
 
-export default Reducer;
+export default reducer;

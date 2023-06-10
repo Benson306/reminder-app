@@ -8,13 +8,15 @@ import HomeStack from './src/utils/HomeStack';
 
 export default function App() {
   return (
-    <ActivityProvider>
+    
       <SafeAreaProvider>
         <NavigationContainer>
-          <HomeStack />
+          <ActivityProvider>
+            <HomeStack />
+          </ActivityProvider>
         </NavigationContainer>
       </SafeAreaProvider>
-    </ActivityProvider>
+    
     
   );
 }
