@@ -1,6 +1,7 @@
 import { Image, Text, TouchableOpacity, View } from "react-native";
 
 const Card = (props) => {
+    console.log(props.repeat);
     return ( <View style={{
         backgroundColor:'#333333',
         marginLeft:18,
@@ -22,6 +23,9 @@ const Card = (props) => {
             <Image source={require('../../assets/clock.png')} style={{marginRight: 5}} />
             <Text style={{color: 'gray'}}>{props.starttime} - {props.endtime}</Text>
         </View>
+        {/* {
+            props.repeatEvery.map(day => <View><Text>day.</Text></View>)
+        } */}
     </View> );
 }
 

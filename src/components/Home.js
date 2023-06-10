@@ -4,9 +4,11 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { Feather } from '@expo/vector-icons';
 import Card from "./Card";
 import { AntDesign } from '@expo/vector-icons';
+import useActivity from "../utils/ActivityContext";
 
 const Home = ({ navigation }) => {
     const insets = useSafeAreaInsets();
+    const { user, activities } = useActivity();
 
     return ( <View style={{ flex: 1, paddingTop: insets.top, paddingBottom: insets.bottom, paddingLeft: insets.left, paddingRight: insets.right, backgroundColor: '#000' }}>
 
@@ -73,14 +75,13 @@ const Home = ({ navigation }) => {
         </TouchableOpacity>
 
         <ScrollView style={{marginBottom:30}}>
-            <Card title="Finance App Design" description="Solve the Finance app bug and build to get it ready for deployment." starttime="10.00 pm" endtime="10.30pm" />
-            <Card title="Finance App Design" description="Solve the Finance app bug and build to get it ready for deployment." starttime="10.00 pm" endtime="10.30pm" />
-            <Card title="Finance App Design" description="Solve the Finance app bug and build to get it ready for deployment." starttime="10.00 pm" endtime="10.30pm" />
-            <Card title="Finance App Design" description="Solve the Finance app bug and build to get it ready for deployment." starttime="10.00 pm" endtime="10.30pm" />
-            <Card title="Finance App Design" description="Solve the Finance app bug and build to get it ready for deployment." starttime="10.00 pm" endtime="10.30pm" />
-            <Card title="Finance App Design" description="Solve the Finance app bug and build to get it ready for deployment." starttime="10.00 pm" endtime="10.30pm" />
-            <Card title="Finance App Design" description="Solve the Finance app bug and build to get it ready for deployment." starttime="10.00 pm" endtime="10.30pm" />
-            <Card title="Finance App Design" description="Solve the Finance app bug and build to get it ready for deployment." starttime="10.00 pm" endtime="10.30pm" />
+            {
+                activities.map(activity =>
+                    <Card title={activity.title} description={activity.description} starttime={activity.startTime} endtime={activity.endTime} repeat={activity.repeatEvery} />
+                
+                    )
+            }
+
         </ScrollView>
 
         

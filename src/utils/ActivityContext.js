@@ -55,6 +55,8 @@ export const ActivityProvider = ({ children }) =>{
     }
 
     let value ={
+        user: state.user,
+        activities: state.activities,
         addActivity,
         deleteActivity
     }
