@@ -19,10 +19,10 @@ const Home = ({ navigation }) => {
 
     return ( <View style={{ flex: 1, paddingTop: insets.top, paddingBottom: insets.bottom, paddingLeft: insets.left, paddingRight: insets.right, backgroundColor: '#000' }}>
 
-        <TouchableOpacity>
+        {/* <TouchableOpacity>
             <MaterialIcons name="date-range" size={24} color="#ccccff" style={{marginTop: 10, paddingRight:25, alignSelf:'flex-end'}} />
         </TouchableOpacity>
-        
+         */}
         
         <Text style={{color:'gray', alignSelf:'center', marginTop:20}}>Hello, <Text style={{color:'#ff944d', fontSize:16}} >Ben Ndiwa!</Text></Text>
 
