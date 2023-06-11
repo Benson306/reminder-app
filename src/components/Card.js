@@ -1,6 +1,7 @@
 import { Image, Text, TouchableOpacity, View } from "react-native";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import useActivity from "../utils/ActivityContext";
+import { Ionicons } from '@expo/vector-icons';
 
 const Card = (props) => {
 
@@ -27,10 +28,18 @@ const Card = (props) => {
             <Image source={require('../../assets/clock.png')} style={{marginRight: 5}} />
             <Text style={{color: 'gray'}}>{props.starttime} - {props.endtime}</Text>
         </View>
+        <View style={{flexDirection:'row', marginTop:8, alignSelf:'flex-start'}}>
+        <Ionicons name="ios-repeat" size={17} color="#fff" style={{marginRight:5}}/>
         {
-            // props.repeat.map(day => <View><Text>day.</Text></View>)
+            props.repeat.map(day =>{
+                if(day.ring){
+                return <View key={day.day} style={{padding: 4, backgroundColor:'#ff944d', marginRight: 5, justifyContent:'center', borderRadius:5}}><Text style={{color:'black', textAlign:'center', fontSize:10, textTransform:'uppercase'}}>{day.day}</Text></View>
+                }
+            } )
             
         }
+        </View>
+        
     </View> );
 }
 

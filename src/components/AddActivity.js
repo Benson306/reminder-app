@@ -139,15 +139,36 @@ const AddActivity = () => {
             date,
             startTime,
             endTime,
-            repeatEvery:{
-                sun: everySun,
-                mon: everyMonday,
-                tue: everyTuesday,
-                wed: everyWed,
-                thur: everyThur,
-                fri: everyFri,
-                sat: everySat
-            },
+            repeatEvery:[
+                { 
+                    day: 'sun',
+                    ring: everySun 
+                },
+                { 
+                    day: 'mon',
+                    ring: everyMonday 
+                },
+                { 
+                    day: 'tue',
+                    ring: everyTuesday 
+                },
+                { 
+                    day:'wed',
+                    ring: everyWed 
+                },
+                { 
+                    day: 'thur',
+                    ring: everyThur 
+                },
+                { 
+                    day:'fri',
+                    ring: everyFri 
+                },
+                { 
+                    day:'sat',
+                    ring: everySat 
+                }
+            ],
             notifyBefore: selectedNotifyTime
         }
 
