@@ -41,10 +41,11 @@ export const ActivityProvider = ({ children }) =>{
         ])
     }
 
-    const deleteActivity = (activity)=>{
-        let updatedActivities = state.activities.filter(currentActivity =>{
-            currentActivity.title !== activity.title
-        })
+    const deleteActivity = (id)=>{
+
+        let updatedActivities = state.activities.filter(currentActivity =>
+            currentActivity.id != id
+        )
 
         dispatch({
             type: "DELETE_ACTIVITY",

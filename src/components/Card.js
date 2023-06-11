@@ -1,7 +1,11 @@
 import { Image, Text, TouchableOpacity, View } from "react-native";
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import useActivity from "../utils/ActivityContext";
 
 const Card = (props) => {
-    console.log(props.repeat);
+
+    const { deleteActivity } = useActivity();
+
     return ( <View style={{
         backgroundColor:'#333333',
         marginLeft:18,
@@ -11,11 +15,11 @@ const Card = (props) => {
         marginTop:10
     }}>
         <View style={{flexDirection:'row', justifyContent:'space-between'}}>
-            <Text style={{color:'white', fontWeight: '900', fontSize:18}}>{props.title}</Text>
+            <Text style={{color:'#ccccff', fontWeight: '900', fontSize:18}}>{props.title}</Text>
             
 
-            <TouchableOpacity>
-                <Text style={{backgroundColor: '#ccccff', padding:3, borderRadius:10, fontSize:12, width:40, textAlign:'center'}}>Edit</Text>
+            <TouchableOpacity onPress={()=>{deleteActivity(props.id)}}>
+                <MaterialCommunityIcons name="delete-circle" size={24} color="#fff" />
             </TouchableOpacity>
         </View>
         <Text style={{color: 'gray', marginTop:15}}>{props.description}</Text>
@@ -23,9 +27,10 @@ const Card = (props) => {
             <Image source={require('../../assets/clock.png')} style={{marginRight: 5}} />
             <Text style={{color: 'gray'}}>{props.starttime} - {props.endtime}</Text>
         </View>
-        {/* {
-            props.repeatEvery.map(day => <View><Text>day.</Text></View>)
-        } */}
+        {
+            // props.repeat.map(day => <View><Text>day.</Text></View>)
+            
+        }
     </View> );
 }
 

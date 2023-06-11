@@ -128,8 +128,12 @@ const AddActivity = () => {
             return;
         }
 
+        // Generate unique Id
+        let id = Date.now();
+
         let activity =
         {
+            id,
             title,
             description,
             date,
