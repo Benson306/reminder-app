@@ -5,11 +5,14 @@ import { Feather } from '@expo/vector-icons';
 import Card from "./Card";
 import { AntDesign } from '@expo/vector-icons';
 import useActivity from "../utils/ActivityContext";
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import moment from 'moment';
+import { AuthContext } from "../utils/AuthContext";
 
 const Home = ({ navigation }) => {
     const insets = useSafeAreaInsets();
+
+    const { name } = useContext(AuthContext);
     
 
     const today = moment();
@@ -28,7 +31,7 @@ const Home = ({ navigation }) => {
 
     const scrollContainerRef = useRef(null);
 
-    const { user, activities } = useActivity();
+    const { activities } = useActivity();
 
     const [sortedActivities, setSortedActivites] = useState([]);
 
@@ -122,7 +125,7 @@ const Home = ({ navigation }) => {
 
     return ( <View style={{ flex: 1, paddingTop: insets.top, paddingBottom: insets.bottom, paddingLeft: insets.left, paddingRight: insets.right, backgroundColor: '#000' }}>
         
-        <Text style={{color:'gray', alignSelf:'center', marginTop:20}}>Hello, <Text style={{color:'#ff944d', fontSize:16}} >Ben Ndiwa!</Text></Text>
+        <Text style={{color:'gray', alignSelf:'center', marginTop:20}}>Hello, <Text style={{color:'#ff944d', fontSize:16}} >{name}!</Text></Text>
 
         <View 
         style={{alignSelf:'center', backgroundColor:'#00004d', marginTop: 20, padding: 10, paddingLeft: 25, paddingRight: 25, borderRadius:25, flexDirection:'row'}}
@@ -145,16 +148,16 @@ const Home = ({ navigation }) => {
                 <Feather name="check-circle" size={38} color="#ff944d" style={{alignSelf:'center'}} />
                 <View style={{marginTop:2}}>
                     <Text style={{color:'#fff', textAlign:'center', fontSize: 12}}>Completed Activities</Text>
-                    <Text style={{color:'#fff', fontSize:20, textAlign:'center'}}>10</Text>
+                    <Text style={{color:'#fff', fontSize:20, textAlign:'center'}}>8</Text>
                 </View>
             </View>
         </View>
 
         <View style={{margin:20, flexDirection:'row', justifyContent:'space-between'}}>
             <Text style={{color:'#fff', fontSize: 18, fontWeight:'bold'}}>Today's Activities</Text>
-            <TouchableOpacity>
+            {/* <TouchableOpacity>
                 <Text style={{color:'#ff944d', fontSize: 12, fontWeight:'bold'}}>See all</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
         </View>
 
         <TouchableOpacity

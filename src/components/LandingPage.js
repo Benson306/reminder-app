@@ -1,13 +1,23 @@
-import React from 'react'
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import React, { useContext, useState } from 'react'
+import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import { AntDesign } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { AuthContext } from '../utils/AuthContext';
 
 export default function LandingPage({ navigation }) {
     
     const insets = useSafeAreaInsets();
+
+    const [name, setName] = useState();
+
+    const { addName } = useContext(AuthContext);
+
+    const handleSetName = () =>{
+      addName(name);
+    }
+
   return (
-    <View style={{...styles.container, paddingTop: insets.top, paddingBottom: insets.bottom, paddingLeft: insets.left, paddingRight: insets.right}}>
+    <View style={{...styles.container}}>
 
     <Text style={styles.h1}>Stay on track with our helpful <Text style={{color:'#ff944d'}}>reminder app!</Text></Text>
 
@@ -16,13 +26,29 @@ export default function LandingPage({ navigation }) {
     <Text style={styles.h2}>Never miss a task or appointment again.</Text>
     <Text style={styles.h2}>Let us help you stay organized and focused.</Text>
 
-    <TouchableOpacity 
+    <TextInput
+    onChangeText={setName}
+    placeholder="Enter Name"
+    placeholderTextColor="gray"
+    selectionColor="#ff944d"
+    style={{
+      borderBottomWidth:1,
+      borderBottomColor:'#ff944d',
+      width:100,
+      marginTop:20,
+      color:'#fff',
+      textAlign:'center'
+    }}
+    />
+
+    {
+      name?.length > 2 && <TouchableOpacity 
         style={styles.button} 
-        onPress={()=> {navigation.navigate('Home')}}
+        onPress={()=> handleSetName()}
     >
         <Text style={styles.buttonText}>Let's Start</Text>
         <AntDesign name="arrowright" size={20} color="white" />
-    </TouchableOpacity>
+    </TouchableOpacity> }
 
     </View>
   )
@@ -47,7 +73,7 @@ const styles = StyleSheet.create({
     },
     button:{
         backgroundColor:'#ff944d',
-        marginTop:40,
+        marginTop:10,
         padding:10,
         borderRadius: 25,
         width:140,
