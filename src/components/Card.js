@@ -17,8 +17,7 @@ const Card = (props) => {
         marginTop:10
     }}>
         <View style={{flexDirection:'row', justifyContent:'space-between'}}>
-            <Text style={{color:'#ccccff', fontWeight: '900', fontSize:18}}>{props.title}</Text>
-            
+            <Text style={{color:'#fff', fontWeight: '900', fontSize:18}}>{props.title}</Text>
 
             <TouchableOpacity onPress={()=>{deleteActivity(props.id)}}>
                 <MaterialCommunityIcons name="delete-circle" size={24} color="#fff" />
@@ -26,7 +25,7 @@ const Card = (props) => {
         </View>
         <Text style={{color: 'gray', marginTop:10}}>{props.description}</Text>
         <View style={{flexDirection:'row', marginTop: 10, alignItems:'center'}}>
-            <EvilIcons name="clock" size={20} color="#fff" style={{marginRight:4}} />
+            <EvilIcons name="clock" size={20} color="#fff" style={{marginRight:3}} />
             <Text style={{color: 'gray'}}>{props.starttime} - {props.endtime}</Text>
         </View>
         <View style={{flexDirection:'row', marginTop:8, alignItems:'center'}}>

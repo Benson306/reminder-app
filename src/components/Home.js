@@ -1,28 +1,90 @@
-import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View, Dimensions } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { MaterialIcons } from '@expo/vector-icons';
 import { Feather } from '@expo/vector-icons';
 import Card from "./Card";
 import { AntDesign } from '@expo/vector-icons';
 import useActivity from "../utils/ActivityContext";
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
+import moment from 'moment';
 
 const Home = ({ navigation }) => {
     const insets = useSafeAreaInsets();
-    const { user, activities } = useActivity();
-
-    useEffect(()=>{
     
 
-    }   
-    )
+    const today = moment();
+    const startDate = today.clone().subtract(7, 'days');
+    const endDate = today.clone().add(7,'days');
+
+    const days = [];
+
+    let currentDate = startDate;
+
+    while (currentDate.isSameOrBefore(endDate,'day')){
+        const formattedDate = currentDate.isSame(today, 'day') ? 'Today' : currentDate.format('ddd, MMM D');
+        days.push(formattedDate);
+        currentDate = currentDate.clone().add(1, 'day');
+    }
+
+    const scrollContainerRef = useRef(null);
+
+    const { user, activities } = useActivity();
+
+    const [sortedActivities, setSortedActivites] = useState([]);
+
+
+    const [selectedDate, setSelectedDate] = useState('');
+
+
+
+
+    useEffect(()=>{
+        let filteredActivities = []; 
+        
+        activities.map(activity => {
+            const formattedDate = moment(activity.date).format('ddd, MMM D');
+            
+            if(selectedDate == 'Today'){
+                if(formattedDate == moment(today).format('ddd, MMM D')){
+                    filteredActivities.push(activity)
+                }
+            }else{
+                if(formattedDate == selectedDate){
+                    filteredActivities.push(activity)
+                }
+            }    
+        })
+
+        setSortedActivites(filteredActivities);
+
+    }, [selectedDate]);
+
+    useEffect(()=>{
+        let filteredActivities = []; 
+
+        activities.map(activity => {
+            const formattedDate = moment(activity.date).format('ddd, MMM D');
+                if(formattedDate == moment(today).format('ddd, MMM D')){
+                    filteredActivities.push(activity)
+                }
+            }
+        )
+        setSortedActivites(filteredActivities);
+    },[])
+
+
+
+
+    useEffect(() => {
+        const todayIndex = days.findIndex((day) => day === 'Today');
+        const scrollPosition = todayIndex * 100 - (Dimensions.get('window').width / 2);
+    
+        if (scrollContainerRef.current) {
+          scrollContainerRef.current.scrollTo({ x: scrollPosition, animated: true });
+        }
+      }, []);
 
     return ( <View style={{ flex: 1, paddingTop: insets.top, paddingBottom: insets.bottom, paddingLeft: insets.left, paddingRight: insets.right, backgroundColor: '#000' }}>
-
-        {/* <TouchableOpacity>
-            <MaterialIcons name="date-range" size={24} color="#ccccff" style={{marginTop: 10, paddingRight:25, alignSelf:'flex-end'}} />
-        </TouchableOpacity>
-         */}
         
         <Text style={{color:'gray', alignSelf:'center', marginTop:20}}>Hello, <Text style={{color:'#ff944d', fontSize:16}} >Ben Ndiwa!</Text></Text>
 
@@ -39,15 +101,15 @@ const Home = ({ navigation }) => {
                 <MaterialIcons name="pending-actions" size={40} color="#ff944d" style={{alignSelf:'center'}} />
                 <View>
                     <Text style={{color:'#fff', textAlign:'center', fontSize:12}}>Pending Activities</Text>
-                    <Text style={{color:'#ccccff', fontSize:20, textAlign:'center'}}>10</Text>
+                    <Text style={{color:'#fff', fontSize:20, textAlign:'center'}}>10</Text>
                 </View>
             </View>
 
             <View style={{padding: 15, borderRadius:10, backgroundColor:'#333333',width: 160}}>
-                <Feather name="check-circle" size={40} color="#ff944d" style={{alignSelf:'center'}} />
-                <View>
+                <Feather name="check-circle" size={38} color="#ff944d" style={{alignSelf:'center'}} />
+                <View style={{marginTop:2}}>
                     <Text style={{color:'#fff', textAlign:'center', fontSize: 12}}>Completed Activities</Text>
-                    <Text style={{color:'#ccccff', fontSize:20, textAlign:'center'}}>10</Text>
+                    <Text style={{color:'#fff', fontSize:20, textAlign:'center'}}>10</Text>
                 </View>
             </View>
         </View>
@@ -81,19 +143,43 @@ const Home = ({ navigation }) => {
             <AntDesign name="plus" size={24} color="#fff" />
         </TouchableOpacity>
 
+        <ScrollView 
+        horizontal={true} 
+        style={{flexGrow:0, padding:5, marginLeft:15, marginRight:5}}
+        showsHorizontalScrollIndicator={false}
+        ref={scrollContainerRef}
+        
+        >
+            {
+                days.map((day, index)=>{
+                    return <TouchableOpacity 
+                    style={{backgroundColor:'#333333', padding:8, borderRadius:20, marginHorizontal:5}} 
+                    key={index} 
+                    onPress={()=> { setSelectedDate(day); }}
+                    >
+                            {
+                                day == selectedDate || day == 'Today'  ?
+                                    <Text style={{color:'#ff944d', fontSize:10}} >{ day }</Text>
+                                :
+                                    <Text style={{color:'#fff', fontSize:10}} >{ day }</Text>
+                            }
+                        </TouchableOpacity>
+                })
+            }
+
+        </ScrollView>
+
         <ScrollView style={{marginBottom:30}}>
             {
-                activities.length < 1 && <View>
-                    <Text style={{color:'#fff', padding: 10, textAlign:'center', fontSize: 12}}>You Have No upcoming activities scheduled.</Text>
+                sortedActivities.length < 1 && <View>
+                    <Text style={{color:'#fff', padding: 10, textAlign:'center', fontSize: 12, marginTop: 20}}>You Have No upcoming activities scheduled.</Text>
                 </View>
             }
             {
-                activities.map(activity =>
+                sortedActivities.map(activity =>
                     <View key={activity.id}>
                         <Card id={activity.id} title={activity.title} description={activity.description} starttime={activity.startTime} endtime={activity.endTime} repeat={activity.repeatEvery} />
                     </View>
-                    
-                
                     )
             }
 
