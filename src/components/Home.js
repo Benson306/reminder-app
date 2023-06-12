@@ -35,6 +35,8 @@ const Home = ({ navigation }) => {
 
     const [selectedDate, setSelectedDate] = useState('');
 
+    const [numberOfTodayActivities, setNumberOfTodayActivities] = useState(0);
+
 
     useEffect(()=>{
         let filteredActivities = []; 
@@ -82,6 +84,8 @@ const Home = ({ navigation }) => {
     }, [selectedDate, activities]);
 
     useEffect(()=>{
+        setNumberOfTodayActivities(0);
+        
         let filteredActivities = []; 
 
         activities.map(activity => {
@@ -91,10 +95,12 @@ const Home = ({ navigation }) => {
             const formattedDate = moment(activity.date).format('ddd, MMM D');
 
                 if(formattedDate == moment(today).format('ddd, MMM D')){
+                    setNumberOfTodayActivities(num => num + 1);
                     filteredActivities.push(activity)
                 }else{
                     activity.repeatEvery.map( dow => { 
                         if(dow.day == formattedDay && dow.ring){ //Check if activity is to be repeated for this day of the week.
+                            setNumberOfTodayActivities(num => num + 1);
                             filteredActivities.push(activity)
                         }
                     })
@@ -122,7 +128,7 @@ const Home = ({ navigation }) => {
         style={{alignSelf:'center', backgroundColor:'#00004d', marginTop: 20, padding: 10, paddingLeft: 25, paddingRight: 25, borderRadius:25, flexDirection:'row'}}
         >
             <Image source={require('../../assets/activity.png')} style={{marginRight:10, marginTop:3}} />
-            <Text style={{color:'#ccccff', textAlign:'center', fontSize: 14}}>You Have 8 Activities Today</Text>
+            <Text style={{color:'#ccccff', textAlign:'center', fontSize: 14}}>You Have { numberOfTodayActivities } Activities Today</Text>
         </View>
 
         <View style={{flexDirection:'row', marginTop:20, justifyContent:'space-evenly'}}>
