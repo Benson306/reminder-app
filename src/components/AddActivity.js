@@ -157,7 +157,7 @@ const AddActivity = () => {
                     ring: everyWed 
                 },
                 { 
-                    day: 'thur',
+                    day: 'thu',
                     ring: everyThur 
                 },
                 { 

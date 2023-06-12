@@ -36,43 +36,73 @@ const Home = ({ navigation }) => {
     const [selectedDate, setSelectedDate] = useState('');
 
 
-
-
     useEffect(()=>{
         let filteredActivities = []; 
         
         activities.map(activity => {
             const formattedDate = moment(activity.date).format('ddd, MMM D');
+
+            const formatSelectedDate = selectedDate.substring(0, 3).toLowerCase();// e.g get 'Mon'
+
+            const nameOfToday = moment(today).format('ddd').toLowerCase();
             
             if(selectedDate == 'Today'){
                 if(formattedDate == moment(today).format('ddd, MMM D')){
-                    filteredActivities.push(activity)
+                    filteredActivities.push(activity);
+                }
+                else
+                {
+                    //Check if Activity is to be repeat for this day
+                    activity.repeatEvery.map( dow => { 
+                        if(dow.day == nameOfToday && dow.ring){ //Check if activity is to be repeated for this day of the week.
+                            filteredActivities.push(activity)
+                        }
+                    })
                 }
             }else{
                 if(formattedDate == selectedDate){
                     filteredActivities.push(activity)
                 }
-            }    
+                else
+                {
+                    //Check if Activity is to be repeat for this day
+                    activity.repeatEvery.map( dow => { 
+                        if(dow.day == formatSelectedDate && dow.ring){ //Check if activity is to be repeated for this day of the week.
+                            filteredActivities.push(activity)
+                        }
+                    })
+                    
+                }
+            }
+            
         })
 
         setSortedActivites(filteredActivities);
 
-    }, [selectedDate]);
+    }, [selectedDate, activities]);
 
     useEffect(()=>{
         let filteredActivities = []; 
 
         activities.map(activity => {
+
+            const formattedDay = moment(today).format('ddd').toLowerCase();
+
             const formattedDate = moment(activity.date).format('ddd, MMM D');
+
                 if(formattedDate == moment(today).format('ddd, MMM D')){
                     filteredActivities.push(activity)
+                }else{
+                    activity.repeatEvery.map( dow => { 
+                        if(dow.day == formattedDay && dow.ring){ //Check if activity is to be repeated for this day of the week.
+                            filteredActivities.push(activity)
+                        }
+                    })
                 }
             }
         )
         setSortedActivites(filteredActivities);
     },[])
-
-
 
 
     useEffect(() => {
@@ -158,7 +188,7 @@ const Home = ({ navigation }) => {
                     onPress={()=> { setSelectedDate(day); }}
                     >
                             {
-                                day == selectedDate || day == 'Today'  ?
+                                day == selectedDate   ?
                                     <Text style={{color:'#ff944d', fontSize:10}} >{ day }</Text>
                                 :
                                     <Text style={{color:'#fff', fontSize:10}} >{ day }</Text>
@@ -172,7 +202,7 @@ const Home = ({ navigation }) => {
         <ScrollView style={{marginBottom:30}}>
             {
                 sortedActivities.length < 1 && <View>
-                    <Text style={{color:'#fff', padding: 10, textAlign:'center', fontSize: 12, marginTop: 20}}>You Have No upcoming activities scheduled.</Text>
+                    <Text style={{color:'#fff', padding: 10, textAlign:'center', fontSize: 12, marginTop: 20}}>You Have No activities scheduled.</Text>
                 </View>
             }
             {
