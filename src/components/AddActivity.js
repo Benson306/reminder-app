@@ -1,10 +1,22 @@
-import { useState } from "react";
-import { Alert, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { useState, useRef, useEffect } from "react";
+import { Alert, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View, Button } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Checkbox from 'expo-checkbox';
 import {Picker} from '@react-native-picker/picker';
 import useActivity from "../utils/ActivityContext";
+import * as Notifications from 'expo-notifications';
+import * as Device from 'expo-device';
+
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: true,
+  }),
+});
+
 
 const AddActivity = () => {
 
@@ -91,11 +103,136 @@ const AddActivity = () => {
         handleEndTimeDisplay();
     }
 
-    // Add Activity Function
+    // Notifications
+    const [expoPushToken, setExpoPushToken] = useState("");
+    const [notification, setNotification] = useState(false);
+    const notificationListener = useRef();
+    const responseListener = useRef();
+
+    useEffect(() => {
+    registerForPushNotificationsAsync().then((token) =>
+        setExpoPushToken(token)
+    );
+
+    notificationListener.current =
+        Notifications.addNotificationReceivedListener((notification) => {
+        setNotification(notification);
+        });
+
+    responseListener.current =
+        Notifications.addNotificationResponseReceivedListener((response) => {
+        console.log(response);
+        });
+
+    return () => {
+    Notifications.removeNotificationSubscription(
+        notificationListener.current
+    );
+    Notifications.removeNotificationSubscription(responseListener.current);
+    };
+    }, []);
+
+
+    async function schedulePushNotification(notificationTitle, body, hour , minute) {
+
+        await Notifications.scheduleNotificationAsync({
+            content: {
+                title: notificationTitle,   //"You've got mail! 📬",
+                body:  body,    //'Here is the notification body\n Okay',
+                data: { data: 'goes here' },
+            },
+            trigger: {
+                hour:  hour,
+                minute: minute,
+                repeats:true,
+            },
+        });
+    }
+
+    async function registerForPushNotificationsAsync() {
+    let token;
+
+    if (Platform.OS === 'android') {
+        await Notifications.setNotificationChannelAsync('default', {
+        name: 'default',
+        importance: Notifications.AndroidImportance.MAX,
+        vibrationPattern: [0, 250, 250, 250],
+        lightColor: '#FF231F7C',
+        });
+    }
+
+    if (Device.isDevice) {
+        const { status: existingStatus } = await Notifications.getPermissionsAsync();
+        let finalStatus = existingStatus;
+        if (existingStatus !== 'granted') {
+        const { status } = await Notifications.requestPermissionsAsync();
+        finalStatus = status;
+        }
+        if (finalStatus !== 'granted') {
+        alert('Failed to get push token for push notification!');
+        return;
+        }
+        token = (await Notifications.getExpoPushTokenAsync({experienceId: "@username/projectSlug", projectId:'e8ddaa39-0d65-496e-903e-9de6822c1452' })).data;
+        //console.log(token);
+    } else {
+        alert('Must use physical device for Push Notifications');
+    }
+
+    return token;
+    }
+
+    // Convert 12 hr time to 24 hr time
+    function getTwentyFourHourTime(time12h){
+        const timeParts = time12h.match(/^(\d+):(\d+) ([AP]M)$/);
+
+        if (timeParts) {
+            let hour = parseInt(timeParts[1], 10);
+            const minute = timeParts[2];
+            const meridiem = timeParts[3];
+
+            if (meridiem === 'PM' && hour < 12) {
+                hour += 12;
+            } else if (meridiem === 'AM' && hour === 12) {
+                hour = 0;
+            }
+
+            const time24h = `${hour.toString().padStart(2, '0')}:${minute}`;
+
+            return time24h; // Output: '19:30' or '10:30'
+
+        } else {
+            console.log('Invalid time format');
+        }
+
+    }
+
+    //Get Time to notify
+    function getTimeToNotify(timeIn24, timeToNotify){
+        const time24h = timeIn24; // 24-hour time
+        const minutesToSubtract = timeToNotify; // Number of minutes to subtract
+
+        const [hour, minute] = time24h.split(':');
+
+        const date = new Date();
+        date.setHours(hour);
+        date.setMinutes(minute);
+
+        date.setMinutes(date.getMinutes() - minutesToSubtract);
+
+        const resultHour = String(date.getHours()).padStart(2, '0');
+        const resultMinute = String(date.getMinutes()).padStart(2, '0');
+
+        const resultTime = `${resultHour}:${resultMinute}`;
+
+        return resultTime; // Output: '14:15' (after subtracting 15 minutes from '14:30')
+
+    }
+
+    // Add Activity Function & Send Notification
 
     const { addActivity } = useActivity();
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         // check if title and decsription is null
         if(title == null || description == null){
             Alert.alert('Failed','Title or Description is Empty', [
@@ -172,10 +309,30 @@ const AddActivity = () => {
             notifyBefore: selectedNotifyTime
         }
 
-        addActivity(activity);
+        addActivity(activity); // Add activity to state
+
+            //Set Notification
+        //Convert Start-time to separate 24 hrs times
+        let newStartTime = getTwentyFourHourTime(startTime);
+
+        const [startHour, startMinute] = newStartTime.split(':');
+
+        // Get Time To notify
+        let timeToNotify = getTimeToNotify(newStartTime, selectedNotifyTime);
+
+        const [notifyHour, NotifyMinute] = timeToNotify.split(':');
+
+        //Set Notification Before Activity
+        await schedulePushNotification(`${title} is in ${selectedNotifyTime} mins`, `${startTime} - ${endTime} ::  ${description}`, Number(notifyHour) , Number(NotifyMinute));
+
+        //Set Notification When Activity Starts
+        await schedulePushNotification(`${title} starts now`, `${startTime} - ${endTime}: ${description}`, Number(startHour) , Number(startMinute));
+
     }
 
     return ( <ScrollView style={{ flex: 1, paddingTop: insets.top, paddingBottom: insets.bottom, paddingLeft: insets.left, paddingRight: insets.right, backgroundColor: '#000' }}>
+
+
         <View style={{marginLeft:20, marginRight: 20}}>
             <Text style={{color:'#fff', fontSize: 18, fontWeight:'900', marginLeft:10, fontSize:14 }}>Title</Text>
             <View style={{backgroundColor:'#333333', padding:10, borderRadius:25, margin: 5}}>

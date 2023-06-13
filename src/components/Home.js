@@ -1,4 +1,4 @@
-import { Image, ScrollView, Text, TouchableOpacity, View, Dimensions, Button, Platform } from "react-native";
+import { Image, ScrollView, Text, TouchableOpacity, View, Dimensions } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { MaterialIcons } from '@expo/vector-icons';
 import { Feather } from '@expo/vector-icons';
@@ -8,8 +8,7 @@ import useActivity from "../utils/ActivityContext";
 import { useContext, useEffect, useRef, useState } from "react";
 import moment from 'moment';
 import { AuthContext } from "../utils/AuthContext";
-import * as Notifications from 'expo-notifications';
-import * as Device from 'expo-device';
+
 
   
 const Home = ({ navigation }) => {
@@ -126,84 +125,7 @@ const Home = ({ navigation }) => {
         }
       }, []);
 
-      //Notifications
-      const [expoPushToken, setExpoPushToken] = useState("");
-      const [notification, setNotification] = useState(false);
-      const notificationListener = useRef();
-      const responseListener = useRef();
-
-      useEffect(() => {
-        registerForPushNotificationsAsync().then((token) =>
-          setExpoPushToken(token)
-        );
-    
-        notificationListener.current =
-          Notifications.addNotificationReceivedListener((notification) => {
-            setNotification(notification);
-          });
-    
-        responseListener.current =
-          Notifications.addNotificationResponseReceivedListener((response) => {
-            console.log(response);
-          });
-
-        return () => {
-        Notifications.removeNotificationSubscription(
-            notificationListener.current
-        );
-        Notifications.removeNotificationSubscription(responseListener.current);
-        };
-        }, []);
-
-
-        async function schedulePushNotification() {
-            await Notifications.scheduleNotificationAsync({
-              content: {
-                title: "You've got mail! 📬",
-                body: 'Here is the notification body',
-                data: { data: 'goes here' },
-              },
-              trigger: {
-                seconds: 1
-                // hour:  11,
-                // minute: 53,
-                // repeats:false,
-              },
-            });
-        }
-        
-        async function registerForPushNotificationsAsync() {
-        let token;
-        
-        if (Platform.OS === 'android') {
-            await Notifications.setNotificationChannelAsync('default', {
-            name: 'default',
-            importance: Notifications.AndroidImportance.MAX,
-            vibrationPattern: [0, 250, 250, 250],
-            lightColor: '#FF231F7C',
-            });
-        }
-        
-        if (Device.isDevice) {
-            const { status: existingStatus } = await Notifications.getPermissionsAsync();
-            let finalStatus = existingStatus;
-            if (existingStatus !== 'granted') {
-            const { status } = await Notifications.requestPermissionsAsync();
-            finalStatus = status;
-            }
-            if (finalStatus !== 'granted') {
-            alert('Failed to get push token for push notification!');
-            return;
-            }
-            token = (await Notifications.getExpoPushTokenAsync({experienceId: "@username/projectSlug", projectId:'e8ddaa39-0d65-496e-903e-9de6822c1452' })).data;
-            console.log(token);
-        } else {
-            alert('Must use physical device for Push Notifications');
-        }
-        
-        return token;
-        }
-
+     
     
 
     return ( <View style={{ flex: 1, paddingTop: insets.top, paddingBottom: insets.bottom, paddingLeft: insets.left, paddingRight: insets.right, backgroundColor: '#000' }}>
@@ -236,12 +158,6 @@ const Home = ({ navigation }) => {
             </View>
         </View>
 
-        <Button
-            title="Press to schedule a notification"
-            onPress={async () => {
-            await schedulePushNotification();
-            }}
-        />
 
         <View style={{margin:20, flexDirection:'row', justifyContent:'space-between'}}>
             <Text style={{color:'#fff', fontSize: 18, fontWeight:'bold'}}>Today's Activities</Text>
