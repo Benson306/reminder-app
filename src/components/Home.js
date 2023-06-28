@@ -113,7 +113,7 @@ const Home = ({ navigation }) => {
             }
         )
         setSortedActivites(filteredActivities);
-    },[])
+    },[activities])
 
 
     useEffect(() => {
