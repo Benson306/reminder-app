@@ -21,10 +21,16 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#0000"
-      }
+      },
+      "package": "com.ben306.reminderApp"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "10c9e9f9-5f19-459d-a41f-72972909d181"
+      }
     }
   }
 }
